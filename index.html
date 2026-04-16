@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>loading...</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:wght@100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Ink:wght@100..900&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Bitcount Ink';
+    src: url('../../../Bitcount_Ink/BitcountInk-VariableFont_CRSV,ELSH,ELXP,SZP1,SZP2,XPN1,XPN2,YPN1,YPN2,slnt,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+  }
+</style>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #04060e; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
+  body::after { content:''; position:fixed; inset:0; z-index:40; pointer-events:none; background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.05) 3px,rgba(0,0,0,0.05) 4px); }
+
+  #lane { position:fixed; bottom:0; left:0; right:0; height:50px; z-index:10; border-top:1px solid rgba(50,67,115,0.25); }
+  .sp { position:absolute; bottom:8px; display:flex; flex-direction:column; align-items:center; }
+  .si { animation:bnc 0.42s ease-in-out infinite; }
+  @keyframes bnc { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+  .lg { animation:stp 0.42s ease-in-out infinite; border-radius:0 0 2px 2px; }
+  .lb { animation-delay:0.21s; }
+  @keyframes stp { 0%,100%{transform:skewX(0)} 50%{transform:skewX(10deg)} }
+  .shd { width:18px; height:3px; background:radial-gradient(ellipse,rgba(50,67,115,0.4) 0%,transparent 75%); margin-top:1px; }
+  @keyframes wR { from{left:-50px} to{left:calc(100vw + 50px)} }
+  @keyframes wL { from{left:calc(100vw + 50px)} to{left:-50px} }
+  .wr { animation:wR linear infinite; }
+  .wl { animation:wL linear infinite; }
+  .wl .si { transform:scaleX(-1); }
+
+  #ctr { position:fixed; inset:0; bottom:50px; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:20; }
+
+  #brain-slot {
+    position:relative;
+    width:450px; height:260px;
+    overflow:hidden;
+    margin-bottom:28px;
+    opacity:0; animation:fi 0.8s 0.2s forwards;
+  }
+  #brainCanvas {
+    position:absolute; top:0; left:0;
+    transform:scale(0.5);
+    transform-origin:top left;
+    cursor:grab;
+  }
+  #brainCanvas:active { cursor:grabbing; }
+
+  #morph-tag {
+    position:absolute;
+    bottom:-6px; left:50%;
+    transform:translateX(-50%);
+    font-family:'Courier New',monospace;
+    font-size:9px;
+    color:rgba(242,190,92,0.4);
+    letter-spacing:0.28em;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:2;
+    animation:tagPulse 3s ease-in-out infinite;
+  }
+  @keyframes tagPulse { 0%,100%{opacity:0.4;} 50%{opacity:0.8;} }
+
+  #brain-hint {
+    position:absolute;
+    top:8px; right:12px;
+    font-family:'Courier New',monospace;
+    font-size:8px;
+    color:rgba(242,190,92,0.5);
+    letter-spacing:0.15em;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:3;
+    opacity:0;
+    animation:fi 0.4s 1.2s forwards;
+  }
+
+  /* #cipher { font-family:'Bitcount Ink',monospace; font-size:clamp(28px,2.5vw,24px); letter-spacing:0.08em; line-height:1.6; text-align:center; min-height:50px; display:flex; align-items:center; justify-content:center; margin-bottom:26px; max-width:min(600px,90vw); color:#F2BE5C !important; position:relative; text-shadow:0 0 4px rgba(242,190,92,0.6), 0 0 12px rgba(242,190,92,0.4), 0 0 24px rgba(255,255,255,0.2); font-palette: none; -webkit-font-palette: none; forced-color-adjust: none; -webkit-forced-color-adjust: none; }
+  #cipher .neural-char { display:inline-block; transition:color 0.15s ease, text-shadow 0.15s ease, transform 0.15s ease; color:transparent !important; position:relative; font-palette: none; -webkit-font-palette: none; background: linear-gradient(180deg, #F2BE5C 0%, #F2A25C 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  #cipher .neural-char.active { color:#F2BE5C !important; text-shadow:0 0 4px rgba(242,190,92,0.6), 0 0 12px rgba(242,190,92,0.4), 0 0 24px rgba(255,255,255,0.2); }
+  #cipher .neural-char.fired { color:#F2BE5C !important; text-shadow:0 0 2px rgba(242,190,92,0.3), 0 0 6px rgba(242,190,92,0.2); } */
+
+  #cipher {
+  font-family: 'Bitcount Ink', monospace;
+  font-size: clamp(28px,2.5vw,24px);
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 26px;
+  max-width: min(600px,90vw);
+
+  color: #F2BE5C; /* ← IMPORTANT: no transparent */
+  text-shadow:
+    0 0 4px rgba(242,190,92,0.6),
+    0 0 12px rgba(242,190,92,0.4),
+    0 0 24px rgba(255,255,255,0.2);
+}
+
+#cipher .neural-char {
+  display: inline-block;
+  position: relative;
+
+  font-family: 'Bitcount Ink', monospace !important;
+
+  background: linear-gradient(180deg, #F2BE5C 0%, #F2A25C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent; /* keep gradient working */
+
+  transition: color 0.15s ease,
+              text-shadow 0.15s ease,
+              transform 0.15s ease;
+}
+
+#cipher .neural-char.active {
+  text-shadow:
+    0 0 6px rgba(242,190,92,0.7),
+    0 0 16px rgba(242,190,92,0.5),
+    0 0 28px rgba(255,255,255,0.25);
+}
+
+#cipher .neural-char.fired {
+  text-shadow:
+    0 0 3px rgba(242,190,92,0.4),
+    0 0 8px rgba(242,190,92,0.25);
+}
+
+  .tracer-dot {
+    position:fixed;
+    width:3px;
+    height:3px;
+    background:#ffffff;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:100;
+    box-shadow:0 0 8px 3px rgba(255,255,255,0.9), 0 0 14px 6px rgba(255,255,255,0.5);
+    transition:none;
+  }
+  .trail-particle {
+    position:fixed;
+    width:2px;
+    height:2px;
+    background:#ffffff;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:99;
+    box-shadow:0 0 4px 1px rgba(255,255,255,0.7);
+    animation:trailFade 1.2s ease-out forwards;
+  }
+  @keyframes trailFade {
+    0% { opacity:0.9; transform:scale(1); }
+    100% { opacity:0; transform:scale(0.2); }
+  }
+
+  .glow-tail {
+    position:fixed;
+    width:3px;
+    height:3px;
+    background:#ffffff;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:96;
+    box-shadow:0 0 6px 2px rgba(255,255,255,0.9), 0 0 12px 4px rgba(255,255,255,0.6), 0 0 20px 8px rgba(255,255,255,0.3);
+    transition:left 0.05s linear, top 0.05s linear;
+  }
+
+  .spark-particle {
+    position:fixed;
+    width:2px;
+    height:2px;
+    background:#ffffff;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:98;
+    box-shadow:0 0 3px 1px rgba(255,255,255,0.6);
+  }
+
+  #bar-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; margin-bottom:26px; opacity:0; animation:fi 0.4s 0.9s forwards; }
+  #btrack { width:180px; height:2px; background:#0e1828; border:1px solid #1e2d4a; overflow:hidden; }
+  #bfill  { height:100%; width:0; background:linear-gradient(90deg,#324373,#F2BE5C,#F2A25C); transition:width 0.12s linear; }
+  #blbl   { font-family:'Courier New',monospace; font-size:9px; color:#2a3850; letter-spacing:0.28em; }
+
+  #prs { font-family:'Courier New',monospace; font-size:10px; color:#F2BE5C; letter-spacing:0.35em; opacity:0; transition:opacity 0.8s ease; }
+  #prs.show { opacity:1; }
+  #prs.pulse { animation:pls 2s ease-in-out infinite; }
+  @keyframes pls { 0%,100%{opacity:1} 50%{opacity:0.15} }
+  .start-key {
+    color:#ffffff;
+    text-shadow:
+      0 0 4px rgba(255,255,255,0.8),
+      0 0 10px rgba(242,190,92,0.8);
+  }
+
+  #sbdg { position:fixed; top:14px; right:18px; z-index:30; font-family:'Courier New',monospace; font-size:9px; color:#1e2d45; letter-spacing:0.2em; display:flex; align-items:center; gap:6px; opacity:0; animation:fi 0.4s 1.5s forwards; }
+  .sdt { width:5px; height:5px; border-radius:50%; background:#F2BE5C; opacity:0.5; animation:pls 2.4s ease-in-out infinite; }
+
+  #wrap { position:fixed; inset:0; transition:opacity 0.8s ease; }
+  #wrap.exit { opacity:0; pointer-events:none; }
+  @keyframes fi { to { opacity:1; } }
+
+  /* Transition overlay for hub navigation */
+  #transition-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #04060e;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  #transition-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  #transition-overlay.blink {
+    animation: eyelidBlink 0.8s steps(1) forwards;
+  }
+  @keyframes eyelidBlink {
+    0% { opacity: 1; }           /* visible */
+    15% { opacity: 0; }          /* black (~120ms) */
+    30% { opacity: 1; }          /* visible (~120ms) */
+    45% { opacity: 0; }          /* black (~150ms) */
+    100% { opacity: 0; }         /* stay black → hub loads */
+  }
+
+  /* Brain pulse effect */
+  #brain-slot.pulse {
+    animation: brainPulse 0.5s ease-out;
+  }
+  @keyframes brainPulse {
+    0% { box-shadow: 0 0 0 0 rgba(242,190,92,0.4); }
+    50% { box-shadow: 0 0 30px 10px rgba(242,190,92,0.3); }
+    100% { box-shadow: 0 0 0 0 rgba(242,190,92,0); }
+  }
+</style>
+</head>
+<body>
+<div id="transition-overlay"></div>
+<div id="wrap">
+
+  <div id="sbdg"><div class="sdt"></div>AUTO SAVE ON</div>
+
+  <div id="ctr">
+    <div id="brain-slot">
+      <canvas id="brainCanvas" width="900" height="520"></canvas>
+      <!-- <div id="morph-tag">✦ &nbsp; morph me &nbsp; ✦</div> -->
+      <div id="brain-hint">our brains are plastic! drag nodes to shape and restructure the brain :)</div>
+    </div>
+
+    <div id="cipher"></div>
+
+    <div id="bar-wrap">
+      <div id="btrack"><div id="bfill"></div></div>
+      <div id="blbl">loading...</div>
+    </div>
+
+    <div id="prs">&#9658; &nbsp; press <span class="start-key">'S'</span> to start</div>
+  </div>
+
+  <div id="lane">
+    <div class="sp wr" style="animation-duration:19s;animation-delay:3s;">
+      <div class="si"><div style="position:relative;width:26px;height:34px;">
+        <div style="position:absolute;width:12px;height:12px;background:#F2BE5C;border-radius:50%;top:0;left:7px;"></div>
+        <div style="position:absolute;width:18px;height:12px;background:#324373;border-radius:2px 2px 0 0;top:10px;left:4px;"></div>
+        <div style="position:absolute;top:21px;left:4px;display:flex;gap:3px;">
+          <div class="lg" style="width:6px;height:8px;background:#1A2440;"></div>
+          <div class="lg lb" style="width:6px;height:8px;background:#1A2440;"></div>
+        </div>
+      </div></div><div class="shd"></div>
+    </div>
+    <div class="sp wl" style="animation-duration:14s;animation-delay:-5s;">
+      <div class="si"><div style="position:relative;width:26px;height:34px;transform:scaleX(-1);">
+        <div style="position:absolute;width:13px;height:13px;background:#F2A25C;border-radius:50%;top:0;left:6px;border:2px solid #BF7256;"></div>
+        <div style="position:absolute;width:18px;height:12px;background:#BF7256;border-radius:2px 2px 0 0;top:11px;left:4px;"></div>
+        <div style="position:absolute;top:22px;left:4px;display:flex;gap:3px;">
+          <div class="lg" style="width:6px;height:8px;background:#a05a3a;"></div>
+          <div class="lg lb" style="width:6px;height:8px;background:#a05a3a;"></div>
+        </div>
+      </div></div><div class="shd"></div>
+    </div>
+    <div class="sp wr" style="animation-duration:11s;animation-delay:-9s;">
+      <div class="si"><div style="position:relative;width:26px;height:34px;">
+        <div style="position:absolute;width:14px;height:10px;background:#324373;border-radius:2px;top:0;left:6px;"></div>
+        <div style="position:absolute;width:3px;height:3px;background:#F2BE5C;border-radius:50%;top:3px;left:8px;"></div>
+        <div style="position:absolute;width:3px;height:3px;background:#F2BE5C;border-radius:50%;top:3px;left:14px;"></div>
+        <div style="position:absolute;width:15px;height:13px;background:#4a6298;border-radius:2px;top:9px;left:5px;"></div>
+        <div style="position:absolute;top:21px;left:5px;display:flex;gap:3px;">
+          <div class="lg" style="width:5px;height:8px;background:#324373;"></div>
+          <div class="lg lb" style="width:5px;height:8px;background:#324373;"></div>
+        </div>
+      </div></div><div class="shd"></div>
+    </div>
+    <div class="sp wl" style="animation-duration:16s;animation-delay:-13s;">
+      <div class="si"><div style="position:relative;width:26px;height:34px;transform:scaleX(-1);">
+        <div style="position:absolute;width:14px;height:6px;background:#BF7256;border-radius:3px 3px 0 0;top:0;left:6px;"></div>
+        <div style="position:absolute;width:11px;height:11px;background:#F2BE5C;border-radius:50%;top:1px;left:7px;"></div>
+        <div style="position:absolute;width:15px;height:12px;background:#BF7256;border-radius:2px 2px 0 0;top:10px;left:5px;"></div>
+        <div style="position:absolute;top:21px;left:5px;display:flex;gap:3px;">
+          <div class="lg" style="width:5px;height:8px;background:#a05a3a;"></div>
+          <div class="lg lb" style="width:5px;height:8px;background:#a05a3a;"></div>
+        </div>
+      </div></div><div class="shd"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/delaunator@5.0.0/delaunator.min.js"></script>
+<script>
+// ── YOUR EXACT BRAIN MESH CODE ────────────────────────────────────────────
+// Only changes: canvas id is brainCanvas, events stopPropagation to protect dismiss
+const brainCanvas = document.getElementById("brainCanvas");
+const ctx = brainCanvas.getContext("2d");
+
+let nodes = [];
+let edges = [];
+let selectedNode = null;
+let improved = false;
+
+const brainPath = new Path2D(`
+  M150,260
+  C130,200 180,120 300,110
+  C420,100 520,120 600,160
+  C680,200 700,260 680,320
+  C660,355 630,372 595,375
+
+  C578,376 562,372 550,362
+  C538,352 532,338 535,325
+  C538,312 548,304 560,306
+  C572,308 580,320 578,333
+  C576,342 568,350 558,350
+
+  C570,358 582,368 582,380
+  C582,392 572,402 560,404
+  C548,406 538,398 536,386
+  C534,374 542,363 554,362
+
+  C540,370 520,376 500,376
+  C475,376 450,370 430,360
+  C415,352 408,340 410,328
+  C412,316 422,308 434,310
+  C446,312 452,324 448,336
+
+  C444,348 432,356 420,354
+  C405,352 395,340 396,327
+  C397,314 408,305 420,306
+
+  C428,360 420,375 410,385
+  C402,393 392,396 382,392
+
+  C490,400 510,415 515,435
+  C518,452 515,472 512,495
+  C508,515 505,525 500,528
+  C495,525 492,515 488,495
+  C485,472 482,452 485,435
+  C488,415 468,405 450,400
+
+  C300,400 260,390 230,360
+  C200,330 190,300 170,300
+  C150,300 140,280 150,260
+  Z
+`);
+
+function reset(){
+  nodes = [];
+  edges = [];
+  createNodes();
+  createEdges();
+}
+
+function randomNodes(){
+  while (nodes.length < 220) {
+    let x = Math.random() * brainCanvas.width;
+    let y = Math.random() * brainCanvas.height;
+    if (ctx.isPointInPath(brainPath, x, y)) {
+      nodes.push({ x, y, vx:0, vy:0 });
+    }
+  }
+}
+
+function improvedNodes(){
+  const minDist = 18;
+  function farEnough(x,y){
+    return nodes.every(n => Math.hypot(n.x-x,n.y-y) > minDist);
+  }
+  let attempts = 0;
+  while(nodes.length < 200 && attempts < 10000){
+    let x = Math.random()*brainCanvas.width;
+    let y = Math.random()*brainCanvas.height;
+    if(ctx.isPointInPath(brainPath,x,y) && farEnough(x,y)){
+      nodes.push({x,y,vx:0,vy:0});
+    }
+    attempts++;
+  }
+  for(let t=0; t<=1; t+=0.01){
+    let x = 150 + 500*t;
+    for(let y=100;y<450;y+=5){
+      if(ctx.isPointInStroke(brainPath,x,y)){
+        nodes.push({x,y,vx:0,vy:0});
+      }
+    }
+  }
+}
+
+function createNodes(){
+  if(improved) improvedNodes(); else randomNodes();
+}
+
+function createEdges() {
+  const pts = nodes.map(n => [n.x, n.y]);
+  const delaunay = Delaunator.from(pts);
+  for (let i = 0; i < delaunay.triangles.length; i += 3) {
+    let a = delaunay.triangles[i];
+    let b = delaunay.triangles[i+1];
+    let c = delaunay.triangles[i+2];
+    addEdge(a,b); addEdge(b,c); addEdge(c,a);
+  }
+}
+
+function addEdge(i,j){
+  if (edges.some(e => (e.i===i && e.j===j)||(e.i===j && e.j===i))) return;
+  let dx = nodes[i].x - nodes[j].x;
+  let dy = nodes[i].y - nodes[j].y;
+  edges.push({i,j,rest:Math.hypot(dx,dy)});
+}
+
+function update(){
+  for (let e of edges){
+    let a = nodes[e.i];
+    let b = nodes[e.j];
+    let dx = b.x - a.x;
+    let dy = b.y - a.y;
+    let dist = Math.hypot(dx,dy)||0.001;
+    let f = (dist - e.rest)*0.02;
+    let fx = dx/dist*f, fy = dy/dist*f;
+    if(a!==selectedNode){a.vx+=fx;a.vy+=fy;}
+    if(b!==selectedNode){b.vx-=fx;b.vy-=fy;}
+  }
+  for (let n of nodes){
+    if(n!==selectedNode){
+      n.x+=n.vx; n.y+=n.vy;
+      n.vx*=0.85; n.vy*=0.85;
+    }
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,brainCanvas.width,brainCanvas.height);
+  ctx.strokeStyle="#3c6e71"; ctx.globalAlpha=0.7;
+  for(let e of edges){
+    let a=nodes[e.i], b=nodes[e.j];
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+  for(let n of nodes){
+    ctx.beginPath(); ctx.arc(n.x,n.y,6,0,Math.PI*2); // brain node size
+    ctx.fillStyle="#284b63"; ctx.fill();
+  }
+}
+
+function loop(){ update(); draw(); requestAnimationFrame(loop); }
+
+// Brain events — stopPropagation prevents dismiss from firing
+brainCanvas.addEventListener("mousedown", e=>{
+  e.stopPropagation();
+  const r = brainCanvas.getBoundingClientRect();
+  const scaleX = brainCanvas.width / r.width;
+  const scaleY = brainCanvas.height / r.height;
+  const mx = (e.clientX - r.left) * scaleX;
+  const my = (e.clientY - r.top) * scaleY;
+  for(let n of nodes){ if(Math.hypot(n.x-mx,n.y-my)<8){ selectedNode=n; break; } }
+});
+
+brainCanvas.addEventListener("mousemove", e=>{
+  if(selectedNode){
+    const r = brainCanvas.getBoundingClientRect();
+    const scaleX = brainCanvas.width / r.width;
+    const scaleY = brainCanvas.height / r.height;
+    selectedNode.x = (e.clientX - r.left) * scaleX;
+    selectedNode.y = (e.clientY - r.top) * scaleY;
+  }
+});
+
+brainCanvas.addEventListener("mouseup", ()=>selectedNode=null);
+brainCanvas.addEventListener("mouseleave", ()=>selectedNode=null);
+brainCanvas.addEventListener("click", e=>e.stopPropagation());
+
+reset(); loop();
+
+
+// ── YOUR EXACT CIPHER + LOADING CODE ─────────────────────────────────────
+(function(){
+  const TARGET = 'building models of the mind';
+  const cipherEl = document.getElementById('cipher');
+  const prsEl    = document.getElementById('prs');
+
+  // Build letter spans
+  function buildNeuralText() {
+    let html = '';
+    for (let i = 0; i < TARGET.length; i++) {
+      if (TARGET[i] === ' ') html += '<span style="display:inline-block;width:0.4em"></span>';
+      else html += `<span class="neural-char" data-idx="${i}">${TARGET[i]}</span>`;
+    }
+    cipherEl.innerHTML = html;
+  }
+
+  function jitter(el) {
+    const x = (Math.random() - 0.5) * 2;
+    const y = (Math.random() - 0.5) * 2;
+    const r = (Math.random() - 0.5) * 2;
+    el.style.transform = `translate(${x}px,${y}px) rotate(${r}deg)`;
+    setTimeout(()=>el.style.transform='translate(0,0) rotate(0deg)',80);
+  }
+
+  // Fire letters sequentially with depth, glow, and breathing
+  function fireNeuron(idx){
+    const spans = cipherEl.querySelectorAll('.neural-char');
+    if(idx >= spans.length){
+      setTimeout(startTracer, 400);
+      return;
+    }
+    const span = spans[idx];
+    span.classList.add('active');
+
+    // 3D depth: closer = bigger, farther = smaller
+    const depthScale = 1 + Math.random()*0.12;
+    const depthOffsetY = (Math.random() - 0.5) * 3;
+    const depthZ = Math.random(); // 0 = far, 1 = close
+
+    // Apply depth transform
+    span.style.transform = `scale(${depthScale}) translateY(${depthOffsetY}px)`;
+
+    // Layered sparks with depth-based size/speed
+    const sparkCount = 3 + Math.floor(Math.random() * 2);
+    for(let i=0; i<sparkCount; i++){
+      const p = document.createElement('div');
+      p.className='spark-particle';
+      const r = span.getBoundingClientRect();
+      
+      // Position with spread
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 8 + Math.random() * 12;
+      p.style.left = (r.left + r.width/2 + Math.cos(angle)*dist) + 'px';
+      p.style.top = (r.top + r.height/2 + Math.sin(angle)*dist*0.6) + 'px';
+      
+      // Depth affects size: closer = bigger
+      const sparkScale = 0.6 + (depthZ * 0.8) + Math.random()*0.4;
+      p.style.width = (2 * sparkScale) + 'px';
+      p.style.height = (2 * sparkScale) + 'px';
+      p.style.opacity = 0.6 + (depthZ * 0.3);
+      
+      document.body.appendChild(p);
+      
+      // Animate out
+      p.animate([
+        { transform: 'scale(1)', opacity: p.style.opacity },
+        { transform: `scale(${sparkScale*0.3})`, opacity: 0 }
+      ], { duration: 500 + Math.random()*300, easing: 'ease-out' }).onfinish = () => p.remove();
+    }
+
+    // Breathing animation during active state
+    span.animate([
+      { transform: `scale(${depthScale}) translateY(${depthOffsetY}px)` },
+      { transform: `scale(${depthScale*1.04}) translateY(${depthOffsetY-1}px)` },
+      { transform: `scale(${depthScale}) translateY(${depthOffsetY}px)` }
+    ], { duration: 350, easing: 'ease-in-out' });
+
+    // Faster letter firing - shorter delay
+    setTimeout(()=>{
+      span.classList.remove('active');
+      span.classList.add('fired');
+      // Keep subtle depth in fired state instead of resetting to flat
+      span.style.transform = `scale(${0.98 + Math.random()*0.04}) translateY(${(Math.random()-0.5)}px)`;
+      span.style.textShadow = '0 0 3px rgba(242,190,92,0.4), 0 0 8px rgba(242,190,92,0.25)';
+      fireNeuron(idx+1);
+    }, 120);
+  }
+
+  // Tracer dot along letters
+  function startTracer(){
+    const spans = cipherEl.querySelectorAll('.neural-char');
+    if(spans.length===0) return;
+
+    const dot = document.createElement('div');
+    dot.className='tracer-dot';
+    document.body.appendChild(dot);
+
+    const letterPaths = spans.map(span=>{
+      const r = span.getBoundingClientRect();
+      const path = [];
+      const steps = 10; // fewer steps = faster
+      for(let i=0;i<steps;i++){
+        path.push({
+          x: r.left + r.width*(i/steps),
+          y: r.top + r.height/2 + (Math.random()-0.5)*6
+        });
+      }
+      return { span, path, rect:r };
+    });
+
+    let letterIdx = 0, pointIdx = 0, dir=1;
+
+    function animate(){
+      const letter = letterPaths[letterIdx];
+      if(!letter) return;
+
+      const point = letter.path[pointIdx];
+      dot.style.left = (point.x - 1.5) + 'px';
+      dot.style.top  = (point.y - 1.5) + 'px';
+
+      // occasional mid-spark
+      if(Math.random()>0.4){
+        const spark = document.createElement('div');
+        spark.className='trail-particle';
+        spark.style.left = point.x + (Math.random()-0.5)*6 + 'px';
+        spark.style.top  = point.y + (Math.random()-0.5)*6 + 'px';
+        document.body.appendChild(spark);
+        setTimeout(()=>spark.remove(), 500 + Math.random()*200);
+      }
+
+      pointIdx += 1;
+      if(pointIdx >= letter.path.length){
+        pointIdx = 0;
+        letterIdx = (letterIdx + dir + letterPaths.length) % letterPaths.length;
+        if(letterIdx === 0 || letterIdx === letterPaths.length-1) dir *= -1;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+
+    // Stop tracer if exiting
+    window.addEventListener('dismissTracer', ()=>{
+      dot.remove();
+    });
+  }
+
+  // Canvas-based pixel tracer - traces actual letter shapes
+  function startCanvasTracer(){
+    const spans = cipherEl.querySelectorAll('.neural-char');
+    if(spans.length===0) return;
+
+    const dot = document.createElement('div');
+    dot.className='tracer-dot';
+    dot.style.width = '2px';
+    dot.style.height = '2px';
+    dot.style.boxShadow = '0 0 6px 2px rgba(255,255,255,0.9), 0 0 12px 4px rgba(255,255,255,0.5)';
+    document.body.appendChild(dot);
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    function getLetterPath(char, w, h) {
+      canvas.width = w;
+      canvas.height = h;
+      ctx.clearRect(0, 0, w, h);
+      ctx.font = window.getComputedStyle(spans[0]).font;
+      ctx.fillStyle = '#fff';
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center';
+      ctx.fillText(char, w/2, h/2);
+      
+      const imageData = ctx.getImageData(0, 0, w, h);
+      const pixels = imageData.data;
+      const points = [];
+      
+      for (let y = 0; y < h; y += 2) {
+        for (let x = 0; x < w; x += 2) {
+          const idx = (y * w + x) * 4;
+          if (pixels[idx + 3] > 100) points.push({x, y});
+        }
+      }
+      
+      if (points.length === 0) return [];
+      
+      // Sort by distance from center to get outline-ish path
+      const cx = w/2, cy = h/2;
+      points.sort((a, b) => Math.hypot(a.x-cx, a.y-cy) - Math.hypot(b.x-cx, b.y-cy));
+      
+      // Build connected path
+      const path = [points[0]];
+      const used = new Set([`0,0`]);
+      
+      while (path.length < points.length && path.length < 50) {
+        const last = path[path.length - 1];
+        let best = null, bestDist = Infinity;
+        
+        for (const p of points) {
+          const key = `${p.x},${p.y}`;
+          if (used.has(key)) continue;
+          const d = Math.hypot(p.x - last.x, p.y - last.y);
+          if (d < bestDist && d < 10) {
+            bestDist = d;
+            best = p;
+          }
+        }
+        
+        if (best) {
+          path.push(best);
+          used.add(`${best.x},${best.y}`);
+        } else break;
+      }
+      
+      return path;
+    }
+
+    function spawnTracerSpark(x, y) {
+      const p = document.createElement('div');
+      p.className = 'spark-particle';
+      // Sparks exactly at tracer position - minimal offset
+      const offsetX = (Math.random()-0.5)*2;
+      const offsetY = (Math.random()-0.5)*2;
+      p.style.left = (x + offsetX) + 'px';
+      p.style.top = (y + offsetY) + 'px';
+      const scale = 0.5 + Math.random() * 0.8;
+      p.style.width = (3 * scale) + 'px';
+      p.style.height = (3 * scale) + 'px';
+      document.body.appendChild(p);
+      p.animate([
+        { transform: 'scale(1)', opacity: 0.8 },
+        { transform: `scale(${scale*0.2})`, opacity: 0 }
+      ], { duration: 400 + Math.random()*200, easing: 'ease-out' }).onfinish = () => p.remove();
+    }
+
+    function spawnGlow(x, y) {
+      if (!dot.glow) {
+        const g = document.createElement('div');
+        g.className = 'glow-tail';
+        g.style.left = (x - 1.5) + 'px';
+        g.style.top = (y - 1.5) + 'px';
+        document.body.appendChild(g);
+        dot.glow = g;
+      } else {
+        dot.glow.style.left = (x - 1.5) + 'px';
+        dot.glow.style.top = (y - 1.5) + 'px';
+      }
+    }
+
+    // Build all letter paths and connect them into one continuous path
+    const letterPaths = [];
+    spans.forEach(span => {
+      const r = span.getBoundingClientRect();
+      const path = getLetterPath(span.textContent, Math.ceil(r.width), Math.ceil(r.height));
+      letterPaths.push({ path, rect: r });
+    });
+
+    // Build continuous connected path with interpolation between letters
+    let continuousPath = [];
+    for (let i = 0; i < letterPaths.length; i++) {
+      const letter = letterPaths[i];
+      const nextLetter = letterPaths[(i + 1) % letterPaths.length];
+      
+      // Add current letter's path
+      letter.path.forEach(pt => {
+        continuousPath.push({
+          x: letter.rect.left + pt.x,
+          y: letter.rect.top + pt.y
+        });
+      });
+      
+      // Add interpolation points to next letter (smooth connection)
+      if (nextLetter && nextLetter.path.length > 0) {
+        const lastPt = {
+          x: letter.rect.left + letter.path[letter.path.length - 1].x,
+          y: letter.rect.top + letter.path[letter.path.length - 1].y
+        };
+        const firstNextPt = {
+          x: nextLetter.rect.left + nextLetter.path[0].x,
+          y: nextLetter.rect.top + nextLetter.path[0].y
+        };
+        
+        // Add 3 interpolation points for smooth transition
+        for (let t = 0.25; t < 1; t += 0.25) {
+          continuousPath.push({
+            x: lastPt.x + (firstNextPt.x - lastPt.x) * t,
+            y: lastPt.y + (firstNextPt.y - lastPt.y) * t
+          });
+        }
+      }
+    }
+
+    let currentIdx = 0;
+    let direction = 1;
+    let running = true;
+
+    function animate() {
+      if (!running) return;
+      
+      const point = continuousPath[currentIdx];
+      dot.style.left = (point.x - 1) + 'px';
+      dot.style.top = (point.y - 1) + 'px';
+      spawnGlow(point.x, point.y);
+
+      // Sparks synced with tracer - spawn every frame with the dot
+      spawnTracerSpark(point.x, point.y);
+
+      currentIdx += direction * 2;
+      
+      if (currentIdx >= continuousPath.length || currentIdx < 0) {
+        direction *= -1;
+        currentIdx = direction > 0 ? 0 : continuousPath.length - 1;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('dismissTracer', () => { 
+      running = false; 
+      if (dot.glow) dot.glow.remove();
+      dot.remove(); 
+    });
+    requestAnimationFrame(animate);
+  }
+
+  // Loading bar
+  const bfill=document.getElementById('bfill'), blbl=document.getElementById('blbl');
+  let p=0;
+  setTimeout(()=>{
+    const iv=setInterval(()=>{
+      p=Math.min(100,p+Math.floor(Math.random()*2)+2);
+      bfill.style.width=p+'%';
+      blbl.textContent=p<100?'loading... '+p+'%':'ready';
+      if(p>=100){
+        clearInterval(iv);
+        prsEl.classList.add('show');
+        setTimeout(() => prsEl.classList.add('pulse'), 650);
+      }
+    },100);
+  },300);
+
+  // Dismiss handler - pulse brain, fade to black, blink reveal
+  function dismiss(){
+    const brainSlot = document.getElementById('brain-slot');
+    const overlay = document.getElementById('transition-overlay');
+    
+    // Pulse the brain
+    brainSlot.classList.add('pulse');
+    
+    // Start eyelid blink immediately (covers screen fully)
+    setTimeout(() => {
+      overlay.classList.add('blink');
+    }, 400);
+    
+    // Navigate to hub after blink completes
+    setTimeout(() => {
+      window.location.replace('hub.html');
+    }, 1200);
+  }
+  
+  document.body.addEventListener('keydown', function handleStart(e){
+    if(e.key.toLowerCase() === 's'){
+      dismiss();
+      document.body.removeEventListener('keydown', handleStart);
+    }
+  });
+
+  buildNeuralText();
+  setTimeout(()=>{
+    fireNeuron(0);
+    startCanvasTracer(); // Start simultaneously with letter firing
+  }, 300);
+})();
+</script>
+</body>
+</html>

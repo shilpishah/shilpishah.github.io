@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Brain Mesh (Dual Mode)</title>
+<style>
+body { margin:0; background:#f5f7f6; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; }
+canvas { box-shadow:0 10px 30px rgba(0,0,0,0.1); border-radius:12px; }
+button { margin-bottom:10px; padding:8px 14px; border:none; border-radius:8px; cursor:pointer; }
+</style>
+</head>
+<body>
+<button onclick="toggleMode()">Switch Mode (Original / Improved)</button>
+<canvas id="canvas" width="900" height="520"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/delaunator@5.0.0/delaunator.min.js"></script>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let nodes = [];
+let edges = [];
+let selectedNode = null;
+let improved = false;
+
+const brainPath = new Path2D(`
+M150,260
+C130,200 180,120 300,110
+C420,100 520,120 600,160
+C680,200 700,260 680,320
+
+C670,340 650,360 630,370
+
+C610,380 600,395 605,410
+C610,425 630,430 645,420
+
+C648,440 646,465 642,495
+C637,465 635,440 638,420
+
+C610,400 580,395 550,390
+C520,380 480,385 440,410
+
+C410,430 380,400 340,400
+C300,400 260,390 230,360
+C200,330 190,300 170,300
+C150,300 140,280 150,260
+Z
+`);
+
+function reset(){
+  nodes = [];
+  edges = [];
+  createNodes();
+  createEdges();
+}
+
+// --- ORIGINAL RANDOM ---
+function randomNodes(){
+  while (nodes.length < 220) {
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height;
+    if (ctx.isPointInPath(brainPath, x, y)) {
+      nodes.push({ x, y, vx:0, vy:0 });
+    }
+  }
+}
+
+// --- IMPROVED: Poisson-ish + boundary ---
+function improvedNodes(){
+  const minDist = 18;
+
+  function farEnough(x,y){
+    return nodes.every(n => Math.hypot(n.x-x,n.y-y) > minDist);
+  }
+
+  // interior
+  let attempts = 0;
+  while(nodes.length < 200 && attempts < 10000){
+    let x = Math.random()*canvas.width;
+    let y = Math.random()*canvas.height;
+    if(ctx.isPointInPath(brainPath,x,y) && farEnough(x,y)){
+      nodes.push({x,y,vx:0,vy:0});
+    }
+    attempts++;
+  }
+
+  // boundary (dense outline)
+  for(let t=0; t<=1; t+=0.01){
+    let x = 150 + 500*t; // simple sweep (approx outline sampling)
+    for(let y=100;y<450;y+=5){
+      if(ctx.isPointInStroke(brainPath,x,y)){
+        nodes.push({x,y,vx:0,vy:0});
+      }
+    }
+  }
+}
+
+function createNodes(){
+  if(improved) improvedNodes(); else randomNodes();
+}
+
+function createEdges() {
+  const pts = nodes.map(n => [n.x, n.y]);
+  const delaunay = Delaunator.from(pts);
+
+  for (let i = 0; i < delaunay.triangles.length; i += 3) {
+    let a = delaunay.triangles[i];
+    let b = delaunay.triangles[i+1];
+    let c = delaunay.triangles[i+2];
+    addEdge(a,b); addEdge(b,c); addEdge(c,a);
+  }
+}
+
+function addEdge(i,j){
+  if (edges.some(e => (e.i===i && e.j===j)||(e.i===j && e.j===i))) return;
+  let dx = nodes[i].x - nodes[j].x;
+  let dy = nodes[i].y - nodes[j].y;
+  edges.push({i,j,rest:Math.hypot(dx,dy)});
+}
+
+function update(){
+  for (let e of edges){
+    let a = nodes[e.i];
+    let b = nodes[e.j];
+    let dx = b.x - a.x;
+    let dy = b.y - a.y;
+    let dist = Math.hypot(dx,dy)||0.001;
+    let f = (dist - e.rest)*0.02;
+    let fx = dx/dist*f, fy = dy/dist*f;
+    if(a!==selectedNode){a.vx+=fx;a.vy+=fy;}
+    if(b!==selectedNode){b.vx-=fx;b.vy-=fy;}
+  }
+  for (let n of nodes){
+    if(n!==selectedNode){
+      n.x+=n.vx; n.y+=n.vy;
+      n.vx*=0.85; n.vy*=0.85;
+    }
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle="#3c6e71"; ctx.globalAlpha=0.7;
+  for(let e of edges){
+    let a=nodes[e.i], b=nodes[e.j];
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+  for(let n of nodes){
+    ctx.beginPath(); ctx.arc(n.x,n.y,3,0,Math.PI*2);
+    ctx.fillStyle="#284b63"; ctx.fill();
+  }
+}
+
+function loop(){ update(); draw(); requestAnimationFrame(loop); }
+
+canvas.addEventListener("mousedown", e=>{
+  const r = canvas.getBoundingClientRect();
+  const mx = e.clientX - r.left;
+  const my = e.clientY - r.top;
+  for(let n of nodes){ if(Math.hypot(n.x-mx,n.y-my)<8){ selectedNode=n; break; } }
+});
+
+canvas.addEventListener("mousemove", e=>{
+  if(selectedNode){
+    const r = canvas.getBoundingClientRect();
+    selectedNode.x = e.clientX - r.left;
+    selectedNode.y = e.clientY - r.top;
+  }
+});
+
+canvas.addEventListener("mouseup", ()=>selectedNode=null);
+canvas.addEventListener("mouseleave", ()=>selectedNode=null);
+
+function toggleMode(){ improved = !improved; reset(); }
+
+reset(); loop();
+</script>
+</body>
+</html>
