@@ -39,14 +39,14 @@
 
   #brain-slot {
     position:relative;
-    width:450px; height:260px;
+    width:540px; height:312px;
     overflow:hidden;
     margin-bottom:28px;
     opacity:0; animation:fi 0.8s 0.2s forwards;
   }
   #brainCanvas {
     position:absolute; top:0; left:0;
-    transform:scale(0.5);
+    transform:scale(0.6);
     transform-origin:top left;
     cursor:grab;
   }
@@ -209,29 +209,13 @@
   #wrap.exit { opacity:0; pointer-events:none; }
   @keyframes fi { to { opacity:1; } }
 
-  /* Transition overlay for hub navigation */
-  #transition-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: #04060e;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
+  /* NES iris-close transition */
+  #wrap.iris-close {
+    animation: irisClose 0.65s ease-in forwards;
   }
-  #transition-overlay.active {
-    opacity: 1;
-    pointer-events: all;
-  }
-  #transition-overlay.blink {
-    animation: eyelidBlink 0.8s steps(1) forwards;
-  }
-  @keyframes eyelidBlink {
-    0% { opacity: 1; }           /* visible */
-    15% { opacity: 0; }          /* black (~120ms) */
-    30% { opacity: 1; }          /* visible (~120ms) */
-    45% { opacity: 0; }          /* black (~150ms) */
-    100% { opacity: 0; }         /* stay black → hub loads */
+  @keyframes irisClose {
+    from { clip-path: circle(150% at 50% 50%); }
+    to   { clip-path: circle(0%   at 50% 50%); }
   }
 
   /* Brain pulse effect */
@@ -246,7 +230,6 @@
 </style>
 </head>
 <body>
-<div id="transition-overlay"></div>
 <div id="wrap">
 
   <div id="sbdg"><div class="sdt"></div>AUTO SAVE ON</div>
@@ -457,14 +440,25 @@ function update(){
 
 function draw(){
   ctx.clearRect(0,0,brainCanvas.width,brainCanvas.height);
+  const NODE_R = 8;
   ctx.strokeStyle="#3c6e71"; ctx.globalAlpha=0.7;
   for(let e of edges){
     let a=nodes[e.i], b=nodes[e.j];
-    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    let dx=b.x-a.x, dy=b.y-a.y;
+    const len=Math.hypot(dx,dy)||0.001;
+    if(len < NODE_R*2) continue;
+    const ox=(dx/len)*NODE_R, oy=(dy/len)*NODE_R;
+    ctx.beginPath(); ctx.moveTo(a.x+ox,a.y+oy); ctx.lineTo(b.x-ox,b.y-oy); ctx.stroke();
   }
   ctx.globalAlpha=1;
+  // First pass: erase any edge lines that cross through node areas
   for(let n of nodes){
-    ctx.beginPath(); ctx.arc(n.x,n.y,6,0,Math.PI*2); // brain node size
+    ctx.beginPath(); ctx.arc(n.x,n.y,NODE_R,0,Math.PI*2);
+    ctx.fillStyle="#04060e"; ctx.fill();
+  }
+  // Second pass: draw node dots on top
+  for(let n of nodes){
+    ctx.beginPath(); ctx.arc(n.x,n.y,NODE_R,0,Math.PI*2);
     ctx.fillStyle="#284b63"; ctx.fill();
   }
 }
@@ -479,7 +473,7 @@ brainCanvas.addEventListener("mousedown", e=>{
   const scaleY = brainCanvas.height / r.height;
   const mx = (e.clientX - r.left) * scaleX;
   const my = (e.clientY - r.top) * scaleY;
-  for(let n of nodes){ if(Math.hypot(n.x-mx,n.y-my)<8){ selectedNode=n; break; } }
+  for(let n of nodes){ if(Math.hypot(n.x-mx,n.y-my)<14){ selectedNode=n; break; } }
 });
 
 brainCanvas.addEventListener("mousemove", e=>{
@@ -492,8 +486,8 @@ brainCanvas.addEventListener("mousemove", e=>{
   }
 });
 
-brainCanvas.addEventListener("mouseup", ()=>selectedNode=null);
-brainCanvas.addEventListener("mouseleave", ()=>selectedNode=null);
+brainCanvas.addEventListener("mouseup", ()=>{ selectedNode=null; });
+brainCanvas.addEventListener("mouseleave", ()=>{ selectedNode=null; });
 brainCanvas.addEventListener("click", e=>e.stopPropagation());
 
 reset(); loop();
@@ -840,23 +834,21 @@ reset(); loop();
     },100);
   },300);
 
-  // Dismiss handler - pulse brain, fade to black, blink reveal
+  // Dismiss handler - pulse brain, iris close, navigate
   function dismiss(){
+    window.dispatchEvent(new Event('dismissTracer'));
     const brainSlot = document.getElementById('brain-slot');
-    const overlay = document.getElementById('transition-overlay');
-    
-    // Pulse the brain
+    const wrap = document.getElementById('wrap');
+
     brainSlot.classList.add('pulse');
-    
-    // Start eyelid blink immediately (covers screen fully)
+
     setTimeout(() => {
-      overlay.classList.add('blink');
-    }, 400);
-    
-    // Navigate to hub after blink completes
+      wrap.classList.add('iris-close');
+    }, 180);
+
     setTimeout(() => {
       window.location.replace('hub.html');
-    }, 1200);
+    }, 900);
   }
   
   document.body.addEventListener('keydown', function handleStart(e){
