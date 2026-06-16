@@ -56,7 +56,7 @@
     bottom: 60px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 9px;
+    font-size: 13px;
     letter-spacing: 0.35em;
     color: rgba(139,155,180,0.4);
     z-index: 20;
@@ -68,7 +68,7 @@
     position: fixed;
     bottom: 30px;
     right: 30px;
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.25em;
     color: rgba(60,110,113,0.5);
     z-index: 20;
@@ -86,17 +86,13 @@
   }
   #main-title {
     font-family: 'Bitcount Ink', monospace;
-    font-size: 18px;
-    letter-spacing: 0.5em;
-    /* Force yellow/orange color - override font palette */
-    background: linear-gradient(180deg, #F2BE5C 0%, #F2A25C 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-palette: none;
-    forced-color-adjust: none;
-    text-shadow: none;
-    filter: drop-shadow(0 0 8px rgba(242,190,92,0.6)) drop-shadow(0 0 20px rgba(242,190,92,0.3));
+    font-size: clamp(24px, 2.5vw, 28px);
+    letter-spacing: 0.08em;
+    color: #F2BE5C;
+    text-shadow:
+      0 0 4px rgba(242,190,92,0.6),
+      0 0 12px rgba(242,190,92,0.4),
+      0 0 24px rgba(255,255,255,0.2);
     margin-bottom: 8px;
   }
   #main-title .scramble-char {
