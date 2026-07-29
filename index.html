@@ -248,7 +248,7 @@
       <div id="blbl">loading...</div>
     </div>
 
-    <div id="prs">&#9658; &nbsp; press <span class="start-key">'S'</span> to start</div>
+    <div id="prs">&#9658; &nbsp; press <span class="start-key">'S'</span> or tap to start</div>
   </div>
 
   <div id="lane">
@@ -851,12 +851,22 @@ reset(); loop();
     }, 900);
   }
   
-  document.body.addEventListener('keydown', function handleStart(e){
-    if(e.key.toLowerCase() === 's'){
-      dismiss();
-      document.body.removeEventListener('keydown', handleStart);
-    }
-  });
+  function startOnce(){
+    dismiss();
+    document.body.removeEventListener('keydown', handleKey);
+    document.body.removeEventListener('click', handleTap);
+    document.body.removeEventListener('touchend', handleTap);
+  }
+  function handleKey(e){
+    if(e.key.toLowerCase() === 's') startOnce();
+  }
+  function handleTap(e){
+    e.preventDefault();
+    startOnce();
+  }
+  document.body.addEventListener('keydown', handleKey);
+  document.body.addEventListener('click', handleTap);
+  document.body.addEventListener('touchend', handleTap, { passive: false });
 
   buildNeuralText();
   setTimeout(()=>{

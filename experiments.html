@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EXPLORATION | Experiments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -24,12 +27,51 @@
       #04060e;
     pointer-events: none;
   }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+  }
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #22d3ee;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #22d3ee;
+    opacity: 0;
+    animation: drift linear infinite, twinkle ease-in-out infinite;
+  }
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-120vh); }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.7; }
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+ 
   .container {
     position: relative;
     z-index: 10;
     max-width: 800px;
     margin: 0 auto;
     padding: 60px 40px;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
   }
   .back-link {
     display: inline-block;
@@ -42,18 +84,26 @@
   }
   .back-link:hover {
     opacity: 0.7;
+    text-shadow: 0 0 8px currentColor;
   }
   h1 {
-    font-family: 'Bitcount Ink', monospace;
+    font-family: 'Bitcount Prop Single', monospace;
+    font-weight: 400;
     font-size: 32px;
     color: #22d3ee;
     margin-bottom: 10px;
     letter-spacing: 0.2em;
+    text-shadow: 0 0 6px currentColor, 0 0 16px currentColor;
   }
   .subtitle {
-    font-size: 12px;
-    color: #6b7a94;
-    letter-spacing: 0.3em;
+    display: inline-block;
+    font-size: 11px;
+    color: #2a1608;
+    letter-spacing: 0.25em;
+    background: linear-gradient(180deg, #F7B36E, #F2A25C);
+    border: 2px solid #1A2440;
+    padding: 6px 16px;
+    box-shadow: 3px 3px 0 #4A6298, 5px 5px 0 rgba(10,14,24,0.4);
     margin-bottom: 50px;
   }
   .content {
@@ -71,18 +121,36 @@
 </style>
 </head>
 <body>
+<div class="particles" id="particles"></div>
 <div class="container">
   <a href="hub.html" class="back-link">◄ RETURN TO NEURAL HUB</a>
   <h1>EXPLORATION</h1>
   <div class="subtitle">[ experiments ]</div>
   
   <div class="content">
-    <p>Welcome to the exploration node. Experimental projects and future ideas.</p>
+    <p>Welcome to the DEFAULT MODE NETWORK! The default mode network activates during mind-wandering and unstructured thought — the space where new ideas take shape before they're fully formed. Experimental projects and future ideas.</p>
     
     <div class="neural-divider"></div>
     
     <p>This space is under construction. Experimental content coming soon.</p>
   </div>
 </div>
+<script>
+  (function() {
+    const field = document.getElementById('particles');
+    const N = 28;
+    for (let i = 0; i < N; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      const driftDur = (10 + Math.random() * 14).toFixed(1) + 's';
+      const twinkleDur = (2 + Math.random() * 3).toFixed(1) + 's';
+      p.style.animationDuration = driftDur + ', ' + twinkleDur;
+      p.style.animationDelay = (Math.random() * 10).toFixed(1) + 's, ' + (Math.random() * 3).toFixed(1) + 's';
+      field.appendChild(p);
+    }
+  })();
+</script>
 </body>
 </html>

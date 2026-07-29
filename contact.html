@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIGNAL | Contact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -19,17 +22,56 @@
     position: fixed;
     inset: 0;
     z-index: 0;
-    background: 
+    background:
       radial-gradient(ellipse at 20% 30%, rgba(244,114,182,0.08) 0%, transparent 50%),
       #04060e;
     pointer-events: none;
   }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+  }
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #f472b6;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #f472b6;
+    opacity: 0;
+    animation: drift linear infinite, twinkle ease-in-out infinite;
+  }
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-120vh); }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.7; }
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
   .container {
     position: relative;
     z-index: 10;
     max-width: 800px;
     margin: 0 auto;
-    padding: 60px 40px;
+    padding: 60px 40px 100px;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
   }
   .back-link {
     display: inline-block;
@@ -42,25 +84,33 @@
   }
   .back-link:hover {
     opacity: 0.7;
+    text-shadow: 0 0 8px currentColor;
   }
   h1 {
-    font-family: 'Bitcount Ink', monospace;
+    font-family: 'Bitcount Prop Single', monospace;
+    font-weight: 400;
     font-size: 32px;
     color: #f472b6;
     margin-bottom: 10px;
     letter-spacing: 0.2em;
+    text-shadow: 0 0 6px currentColor, 0 0 16px currentColor;
   }
   .subtitle {
-    font-size: 12px;
-    color: #6b7a94;
-    letter-spacing: 0.3em;
+    display: inline-block;
+    font-size: 11px;
+    color: #2a1608;
+    letter-spacing: 0.25em;
+    background: linear-gradient(180deg, #F7B36E, #F2A25C);
+    border: 2px solid #1A2440;
+    padding: 6px 16px;
+    box-shadow: 3px 3px 0 #4A6298, 5px 5px 0 rgba(10,14,24,0.4);
     margin-bottom: 50px;
   }
   .content {
     font-size: 14px;
     line-height: 1.8;
   }
-  .content p {
+  .content > p {
     margin-bottom: 20px;
   }
   .neural-divider {
@@ -68,21 +118,170 @@
     background: linear-gradient(90deg, transparent, rgba(244,114,182,0.3), transparent);
     margin: 40px 0;
   }
+
+  /* ---- hero wizard ---- */
+  .wiz-hero-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0 20px;
+    height: 440px;
+  }
+  .wiz-hero-glow {
+    position: absolute;
+    width: 460px;
+    height: 460px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(244,114,182,0.4), transparent 70%);
+    filter: blur(6px);
+    animation: glowPulse 3s ease-in-out infinite;
+    z-index: 0;
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50%      { opacity: 1; transform: scale(1.08); }
+  }
+  .wiz-hero {
+    position: relative;
+    z-index: 1;
+    width: 400px;
+    height: 400px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    animation: wizHeroFloat 2.6s ease-in-out infinite;
+  }
+  @keyframes wizHeroFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+
+  /* ---- icon row ---- */
+  .icon-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin: 10px 0 20px;
+  }
+  .icon-link {
+    width: 60px;
+    height: 60px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 3px solid;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .icon-link:hover {
+    transform: translate(-2px, -2px);
+  }
+  .icon-link img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+  }
+  .icon-link.icon-lg img {
+    width: 80%;
+    height: 80%;
+  }
+  .icon-purple {
+    background: linear-gradient(180deg, #E4D4F0, #B98FD1 55%, #8B5FBF);
+    border-color: #4a2a63;
+    box-shadow: 4px 4px 0 #8B5FBF, 6px 6px 0 rgba(20,10,30,0.4);
+  }
+  .icon-purple:hover {
+    box-shadow: 6px 6px 0 #8B5FBF, 9px 9px 0 rgba(20,10,30,0.4);
+  }
+  .icon-orange {
+    background: linear-gradient(180deg, #FCE0B8, #F7B36E 55%, #F59E0B);
+    border-color: #8a5024;
+    box-shadow: 4px 4px 0 #F59E0B, 6px 6px 0 rgba(20,12,4,0.4);
+  }
+  .icon-orange:hover {
+    box-shadow: 6px 6px 0 #F59E0B, 9px 9px 0 rgba(20,12,4,0.4);
+  }
+  .icon-blue {
+    background: linear-gradient(180deg, #D6DEF0, #7C93C4 55%, #4A6298);
+    border-color: #1A2440;
+    box-shadow: 4px 4px 0 #4A6298, 6px 6px 0 rgba(10,14,24,0.45);
+  }
+  .icon-blue:hover {
+    box-shadow: 6px 6px 0 #4A6298, 9px 9px 0 rgba(10,14,24,0.45);
+  }
+  .icon-yellow {
+    background: linear-gradient(180deg, #F8E3B0, #F5CE7A 55%, #F2BE5C);
+    border-color: #8a4c30;
+    box-shadow: 4px 4px 0 #F2BE5C, 6px 6px 0 rgba(20,12,4,0.35);
+  }
+  .icon-yellow:hover {
+    box-shadow: 6px 6px 0 #F2BE5C, 9px 9px 0 rgba(20,12,4,0.35);
+  }
+  .icon-pink {
+    background: linear-gradient(180deg, #FADCE9, #F2A0C4 55%, #f472b6);
+    border-color: #7a2f52;
+    box-shadow: 4px 4px 0 #f472b6, 6px 6px 0 rgba(20,8,14,0.4);
+  }
+  .icon-pink:hover {
+    box-shadow: 6px 6px 0 #f472b6, 9px 9px 0 rgba(20,8,14,0.4);
+  }
 </style>
 </head>
 <body>
+<div class="particles" id="particles"></div>
 <div class="container">
   <a href="hub.html" class="back-link">◄ RETURN TO NEURAL HUB</a>
   <h1>SIGNAL</h1>
   <div class="subtitle">[ contact ]</div>
-  
+
   <div class="content">
-    <p>Welcome to the signal node. Open channels for communication.</p>
-    
+    <p>Welcome to BROCA'S AREA! Broca's area is the region of the brain responsible for language production — turning thought into speech. Open channels for communication.</p>
+
     <div class="neural-divider"></div>
-    
-    <p>This space is under construction. Contact information coming soon.</p>
+
+    <div class="wiz-hero-wrap">
+      <div class="wiz-hero-glow"></div>
+      <img src="assets/Wiz2.png" class="wiz-hero" alt="">
+    </div>
+
+    <div class="icon-row">
+      <a href="https://github.com/shilpishah" target="_blank" rel="noopener" class="icon-link icon-purple">
+        <img src="assets/icons/github_icon.png" alt="GitHub">
+      </a>
+      <a href="mailto:shilpish@andrew.cmu.edu" class="icon-link icon-orange">
+        <img src="assets/icons/gmail_icon.png" alt="Email">
+      </a>
+      <a href="https://www.linkedin.com/in/shilpishahh" target="_blank" rel="noopener" class="icon-link icon-blue icon-lg">
+        <img src="assets/icons/linkedin_icon.png" alt="LinkedIn">
+      </a>
+      <a href="https://scholar.google.com/citations?view_op=list_works&hl=en&hl=en&user=nwGi15sAAAAJ" target="_blank" rel="noopener" class="icon-link icon-yellow icon-lg">
+        <img src="assets/icons/scholar_icon.png" alt="Google Scholar">
+      </a>
+      <a href="https://x.com/shilpishahh" target="_blank" rel="noopener" class="icon-link icon-pink">
+        <img src="assets/icons/x_icon.webp" alt="X">
+      </a>
+    </div>
+
   </div>
 </div>
+<script>
+  (function() {
+    const field = document.getElementById('particles');
+    const N = 28;
+    for (let i = 0; i < N; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      const driftDur = (10 + Math.random() * 14).toFixed(1) + 's';
+      const twinkleDur = (2 + Math.random() * 3).toFixed(1) + 's';
+      p.style.animationDuration = driftDur + ', ' + twinkleDur;
+      p.style.animationDelay = (Math.random() * 10).toFixed(1) + 's, ' + (Math.random() * 3).toFixed(1) + 's';
+      field.appendChild(p);
+    }
+  })();
+</script>
 </body>
 </html>

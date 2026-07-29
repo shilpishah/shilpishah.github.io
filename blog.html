@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MEMORY | Blog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -19,17 +22,56 @@
     position: fixed;
     inset: 0;
     z-index: 0;
-    background: 
+    background:
       radial-gradient(ellipse at 20% 30%, rgba(245,158,11,0.08) 0%, transparent 50%),
       #04060e;
     pointer-events: none;
   }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+  }
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #f59e0b;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #f59e0b;
+    opacity: 0;
+    animation: drift linear infinite, twinkle ease-in-out infinite;
+  }
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-120vh); }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.7; }
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
   .container {
     position: relative;
     z-index: 10;
     max-width: 800px;
     margin: 0 auto;
-    padding: 60px 40px;
+    padding: 60px 40px 100px;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
   }
   .back-link {
     display: inline-block;
@@ -42,25 +84,34 @@
   }
   .back-link:hover {
     opacity: 0.7;
+    text-shadow: 0 0 8px currentColor;
   }
   h1 {
-    font-family: 'Bitcount Ink', monospace;
+    font-family: 'Bitcount Prop Single', monospace;
+    font-weight: 400;
     font-size: 32px;
     color: #f59e0b;
     margin-bottom: 10px;
     letter-spacing: 0.2em;
+    text-shadow: 0 0 6px currentColor, 0 0 16px currentColor;
   }
   .subtitle {
-    font-size: 12px;
-    color: #6b7a94;
-    letter-spacing: 0.3em;
+    display: inline-block;
+    font-size: 11px;
+    color: #2a1608;
+    letter-spacing: 0.25em;
+    background: linear-gradient(180deg, #F7B36E, #F2A25C);
+    border: 2px solid #1A2440;
+    padding: 6px 16px;
+    box-shadow: 3px 3px 0 #4A6298, 5px 5px 0 rgba(10,14,24,0.4);
     margin-bottom: 50px;
   }
   .content {
+    position: relative;
     font-size: 14px;
     line-height: 1.8;
   }
-  .content p {
+  .content > p {
     margin-bottom: 20px;
   }
   .neural-divider {
@@ -68,21 +119,218 @@
     background: linear-gradient(90deg, transparent, rgba(245,158,11,0.3), transparent);
     margin: 40px 0;
   }
+
+  /* ---- section tab ---- */
+  .section-title {
+    display: inline-block;
+    font-family: 'Bitcount Prop Single', monospace;
+    font-weight: 400;
+    font-size: 18px;
+    color: #ffffff;
+    letter-spacing: 0.14em;
+    text-shadow: 0 0 4px rgba(255,255,255,0.3);
+    background: #241608;
+    border: 3px solid #8a5024;
+    padding: 8px 22px;
+    margin: 50px 0 26px;
+    box-shadow: 4px 4px 0 #f59e0b, 6px 6px 0 rgba(20,12,4,0.4);
+  }
+  .section-title:first-of-type {
+    margin-top: 10px;
+  }
+
+  /* ---- post cards (ready for future entries) ---- */
+  .timeline {
+    position: relative;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 15px;
+    width: 2px;
+    background: linear-gradient(180deg,
+      rgba(138,80,36,0.05),
+      rgba(138,80,36,0.45) 8%,
+      rgba(138,80,36,0.45) 92%,
+      rgba(138,80,36,0.05));
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 30px;
+  }
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+  .timeline-content {
+    margin-left: 36px;
+    background: linear-gradient(180deg, #FCE0B8, #F7B36E 55%, #F59E0B);
+    border: 3px solid #8a5024;
+    padding: 16px 20px;
+    box-shadow: 6px 6px 0 #F59E0B, 9px 9px 0 rgba(20,12,4,0.35), inset 0 2px 0 rgba(255,255,255,0.35);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .timeline-item:hover .timeline-content {
+    border-color: #4a2c10;
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 #F59E0B, 13px 13px 0 rgba(20,12,4,0.35), inset 0 2px 0 rgba(255,255,255,0.45);
+  }
+  .entry-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .role-title {
+    font-weight: bold;
+    color: #2a1608;
+    font-size: 14.5px;
+    letter-spacing: 0.02em;
+  }
+  .entry-dates {
+    font-size: 12px;
+    color: #6b3820;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .entry-sub-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 3px 0 12px;
+  }
+  .company-name {
+    font-style: italic;
+    color: #5c3a20;
+    font-size: 12.5px;
+  }
+  .entry-bullets {
+    list-style: none;
+  }
+  .entry-bullets li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #2f1810;
+  }
+  .entry-bullets li:last-child {
+    margin-bottom: 0;
+  }
+  .entry-bullets li::before {
+    content: '●';
+    position: absolute;
+    left: 2px;
+    top: 1px;
+    font-size: 9px;
+    color: #F59E0B;
+    text-shadow: -1px 0 0 #8a5024, 1px 0 0 #8a5024, 0 -1px 0 #8a5024, 0 1px 0 #8a5024;
+  }
+  .ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    padding: 4px 12px;
+    margin-top: 10px;
+    background: #241608;
+    color: #ffffff;
+    border: 2px solid #8a5024;
+    text-decoration: none;
+    box-shadow: 2px 2px 0 #F59E0B;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ext-link:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 #F59E0B;
+  }
+
+  /* ---- empty state ---- */
+  .empty-state {
+    background: linear-gradient(180deg, #FCE0B8, #F7B36E 55%, #F59E0B);
+    border: 3px dashed #8a5024;
+    padding: 26px 24px;
+    text-align: center;
+    box-shadow: 6px 6px 0 rgba(245,158,11,0.5), 9px 9px 0 rgba(20,12,4,0.3);
+  }
+  .empty-state p {
+    color: #4a2c10;
+    font-size: 13.5px;
+    margin: 0;
+  }
+  .empty-state p.small {
+    margin-top: 8px;
+    font-size: 11.5px;
+    font-style: italic;
+    color: #6b3820;
+  }
 </style>
 </head>
 <body>
+<div class="particles" id="particles"></div>
 <div class="container">
   <a href="hub.html" class="back-link">◄ RETURN TO NEURAL HUB</a>
   <h1>MEMORY</h1>
   <div class="subtitle">[ blog ]</div>
-  
+
   <div class="content">
-    <p>Welcome to the memory node. Thoughts, essays, and explorations.</p>
-    
+    <p>Welcome to the HIPPOCAMPUS! The hippocampus is the brain's memory center, encoding new experiences into lasting ones. Thoughts, essays, and explorations — memories in the making.</p>
+
     <div class="neural-divider"></div>
-    
-    <p>This space is under construction. Blog posts coming soon.</p>
+
+    <h2 class="section-title">ENTRIES</h2>
+
+    <!--
+      No posts yet. When you're ready to add one, drop a block like this
+      inside a <div class="timeline"> wrapper (see cv.html / projects.html
+      for the pattern):
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <div class="entry-top-row">
+            <span class="role-title">Post Title</span>
+            <span class="entry-dates">Mon YYYY</span>
+          </div>
+          <div class="entry-sub-row">
+            <span class="company-name">tag / topic</span>
+          </div>
+          <ul class="entry-bullets">
+            <li>Excerpt or summary line.</li>
+          </ul>
+          <a href="#" class="ext-link">↗ Read more</a>
+        </div>
+      </div>
+    -->
+
+    <div class="empty-state">
+      <p>◇ No entries logged yet ◇</p>
+      <p class="small">first memory loading soon</p>
+    </div>
+
   </div>
 </div>
+<script>
+  (function() {
+    const field = document.getElementById('particles');
+    const N = 28;
+    for (let i = 0; i < N; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      const driftDur = (10 + Math.random() * 14).toFixed(1) + 's';
+      const twinkleDur = (2 + Math.random() * 3).toFixed(1) + 's';
+      p.style.animationDuration = driftDur + ', ' + twinkleDur;
+      p.style.animationDelay = (Math.random() * 10).toFixed(1) + 's, ' + (Math.random() * 3).toFixed(1) + 's';
+      field.appendChild(p);
+    }
+  })();
+</script>
 </body>
 </html>

@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SELF | About Me</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -24,12 +27,51 @@
       #04060e;
     pointer-events: none;
   }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+  }
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #F2BE5C;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #F2BE5C;
+    opacity: 0;
+    animation: drift linear infinite, twinkle ease-in-out infinite;
+  }
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-120vh); }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.7; }
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+ 
   .container {
     position: relative;
     z-index: 10;
     max-width: 800px;
     margin: 0 auto;
     padding: 60px 40px;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
   }
   .back-link {
     display: inline-block;
@@ -42,18 +84,26 @@
   }
   .back-link:hover {
     opacity: 0.7;
+    text-shadow: 0 0 8px currentColor;
   }
   h1 {
-    font-family: 'Bitcount Ink', monospace;
+    font-family: 'Bitcount Prop Single', monospace;
+    font-weight: 400;
     font-size: 32px;
     color: #F2BE5C;
     margin-bottom: 10px;
     letter-spacing: 0.2em;
+    text-shadow: 0 0 6px currentColor, 0 0 16px currentColor;
   }
   .subtitle {
-    font-size: 12px;
-    color: #6b7a94;
-    letter-spacing: 0.3em;
+    display: inline-block;
+    font-size: 11px;
+    color: #2a1608;
+    letter-spacing: 0.25em;
+    background: linear-gradient(180deg, #F7B36E, #F2A25C);
+    border: 2px solid #1A2440;
+    padding: 6px 16px;
+    box-shadow: 3px 3px 0 #4A6298, 5px 5px 0 rgba(10,14,24,0.4);
     margin-bottom: 50px;
   }
   .content {
@@ -63,28 +113,231 @@
   .content p {
     margin-bottom: 20px;
   }
+  .content a {
+    color: #F2BE5C;
+    text-decoration: underline;
+    transition: opacity 0.2s ease;
+  }
+  .content a:hover {
+    opacity: 0.7;
+  }
   .neural-divider {
+    clear: both;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(242,190,92,0.3), transparent);
     margin: 40px 0;
+    animation: shimmer 3s ease-in-out infinite;
   }
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .profile-pic {
+    float: right;
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid rgba(242,190,92,0.3);
+    margin: 0 0 20px 30px;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .profile-pic:hover {
+    border-color: rgba(242,190,92,0.7);
+    box-shadow: 0 0 20px rgba(242,190,92,0.35);
+  }
+  @media (max-width: 600px) {
+    .profile-pic {
+      float: none;
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0 0 20px 0;
+    }
+  }
+
+  /* ---- section tabs ---- */
+  .section-title {
+    display: inline-block;
+    font-family: 'Bitcount Prop Single', monospace;
+    font-weight: 400;
+    font-size: 18px;
+    color: #ffffff;
+    letter-spacing: 0.14em;
+    text-shadow: 0 0 4px rgba(255,255,255,0.3);
+    background: #1A2440;
+    border: 3px solid #8a4c30;
+    padding: 8px 22px;
+    margin: 50px 0 26px;
+    box-shadow: 4px 4px 0 #F2A25C, 6px 6px 0 rgba(14,24,40,0.35);
+  }
+  .section-title:first-of-type {
+    margin-top: 10px;
+  }
+
+  /* ---- character art ---- */
+  .char-researcher {
+    float: left;
+    width: 225px;
+    height: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    margin: 0 25px 15px 0;
+  }
+  .char-snoop {
+    float: right;
+    width: 195px;
+    height: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    margin: 0 0 15px 25px;
+  }
+  @media (max-width: 600px) {
+    .char-researcher, .char-snoop {
+      float: none;
+      display: block;
+      margin: 0 auto 15px;
+    }
+  }
+
+  /* ---- contact icon row ---- */
+  .icon-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin: 10px 0 20px;
+  }
+  .icon-link {
+    width: 60px;
+    height: 60px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 3px solid;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .icon-link:hover {
+    transform: translate(-2px, -2px);
+  }
+  .icon-link img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+  }
+  .icon-link.icon-lg img {
+    width: 80%;
+    height: 80%;
+  }
+  .icon-purple {
+    background: linear-gradient(180deg, #E4D4F0, #B98FD1 55%, #8B5FBF);
+    border-color: #4a2a63;
+    box-shadow: 4px 4px 0 #8B5FBF, 6px 6px 0 rgba(20,10,30,0.4);
+  }
+  .icon-purple:hover { box-shadow: 6px 6px 0 #8B5FBF, 9px 9px 0 rgba(20,10,30,0.4); }
+  .icon-orange {
+    background: linear-gradient(180deg, #FCE0B8, #F7B36E 55%, #F59E0B);
+    border-color: #8a5024;
+    box-shadow: 4px 4px 0 #F59E0B, 6px 6px 0 rgba(20,12,4,0.4);
+  }
+  .icon-orange:hover { box-shadow: 6px 6px 0 #F59E0B, 9px 9px 0 rgba(20,12,4,0.4); }
+  .icon-blue {
+    background: linear-gradient(180deg, #D6DEF0, #7C93C4 55%, #4A6298);
+    border-color: #1A2440;
+    box-shadow: 4px 4px 0 #4A6298, 6px 6px 0 rgba(10,14,24,0.45);
+  }
+  .icon-blue:hover { box-shadow: 6px 6px 0 #4A6298, 9px 9px 0 rgba(10,14,24,0.45); }
+  .icon-yellow {
+    background: linear-gradient(180deg, #F8E3B0, #F5CE7A 55%, #F2BE5C);
+    border-color: #8a4c30;
+    box-shadow: 4px 4px 0 #F2BE5C, 6px 6px 0 rgba(20,12,4,0.35);
+  }
+  .icon-yellow:hover { box-shadow: 6px 6px 0 #F2BE5C, 9px 9px 0 rgba(20,12,4,0.35); }
+  .icon-pink {
+    background: linear-gradient(180deg, #FADCE9, #F2A0C4 55%, #f472b6);
+    border-color: #7a2f52;
+    box-shadow: 4px 4px 0 #f472b6, 6px 6px 0 rgba(20,8,14,0.4);
+  }
+  .icon-pink:hover { box-shadow: 6px 6px 0 #f472b6, 9px 9px 0 rgba(20,8,14,0.4); }
 </style>
 </head>
 <body>
+  <div class="particles" id="particles"></div>
 <div class="container">
   <a href="hub.html" class="back-link">◄ RETURN TO NEURAL HUB</a>
   <h1>SELF</h1>
   <div class="subtitle">[ about me ]</div>
   
   <div class="content">
-    <p>Welcome to the self node. This is where the narrative begins.</p>
+    <p>Welcome to the FRONTAL LOBE! The frontal lobe is the forwardmost part of the brain, and governs higher-order thinking, decision-making, and personality. Take a step in and welcome to the chaos behind the eyes and mind of Shilpi Shah.</p>
+    <img src="assets/me.JPG" alt="Photo of me" class="profile-pic">
     
-    <p>I am a researcher and creator exploring the intersection of neuroscience, technology, and human experience. My work focuses on building models of the mind—both computational and conceptual.</p>
-    
+    <h2 class="section-title">THE BASICS!</h2>
+    <p>Hi! I am currently a M.S. in Neural Technologies - Research at the Carnegie Mellon University Neuroscience Institute, pursuing my thesis in active perception and world models supervised by Dr. Tai Sing Lee. 
+      I am also currently working as an embodied AI evaluation + world model simulations researcher at a startup in Stealth in NYC. Previously, I've also been an autonomous vehicles and quantum algorithms researcher as an NSF Research Experience for Undergraduates (REU) fellow for two summers, and researched natural language decoding for a year at the Princeton Neuroscience Institute. You can read more about my previous work and experiences <a href="cv.html">here</a>.
+      I recently graduated with my B.S. in Computer Science and B.A. in Cognitive Science (Honors) with a minor in Mathematics and certificate in Women's Leadership. 
+    </p>
+
+    <h2 class="section-title">RESEARCH INTERESTS</h2>
+    <img src="assets/chars/researcher.png" alt="" class="char-researcher">
+    <p>My research interests lie in the intersection of cognitive science and artificial intelligence, particularly in understanding how biological systems process information and how these principles can be applied to world models and robotics. 
+      I aim to investigate the computational principles that enable biological and artificial systems to build, maintain, and reason over internal models of the world. I am particularly interested in the role of active perception, attention, and memory in shaping these internal representations to give rise to robust generalization in complex environments. By combining insights from cognitive/computational neuroscience, autonomous vehicles, probabilistic and quantum systems, and modern machine learning, I hope to develop computational models that both advance embodied AI and deepen our understanding of intelligence and cognition itself. 
+
+      More specifically, I hope to answer the question: How do biological and artificial systems construct, maintain, and update internal representations of the world? 
+    </p>
+
+    <h2 class="section-title">PERSONAL</h2>
+    <img src="assets/chars/snoop_hp.png" alt="" class="char-snoop">
+    <p>Contrary to popular belief, I do, in fact, have hobbies beyond research! 
+      
+      I love music (with 100+ personally curated playlists) and can play seven instruments, including the flute, violin, piano, guitar, saxophone, percussion, and clarinet. 
+      When I was in high school, I actually had a goal of getting a loop pedal and performing a one-person band act, but it sadly never happened. This is still one of my life goals, so fingers crossed I'm able to do it soon!
+      
+      I also love to travel and have been to 20 countries and counting! My favorites so far have been Switzerland and Belgium (though that may just be because I love chocolate), but I also absolutely loved Florence, Italy and plan to go back on my own soon!  
+
+      My name means artist and I've worked very hard in making sure to incorporate this into my identity whenever I can. Ever since I was young, I've loved to draw, paint, read, graphic design, and all around, just create. I'm in the process of learning how to do pottery! Creativity is in everything we do; invention is art. To me, there is no vast difference between art and science, and I love to explore the intersection of the two. 
+
+      And if you can't tell, I absolutely love video games. My entire childhood was pretty much shaped by Mario, which is my primary inspiration for this site. I hope you enjoy playing through!
+    </p>
+
     <div class="neural-divider"></div>
-    
-    <p>This space is under construction. More content coming soon.</p>
-  </div>
+
+    <div class="icon-row">
+      <a href="mailto:shilpish@andrew.cmu.edu" class="icon-link icon-orange">
+        <img src="assets/icons/gmail_icon.png" alt="Email">
+      </a>
+      <a href="https://github.com/shilpishah" target="_blank" rel="noopener" class="icon-link icon-purple">
+        <img src="assets/icons/github_icon.png" alt="GitHub">
+      </a>
+      <a href="https://www.linkedin.com/in/shilpishahh" target="_blank" rel="noopener" class="icon-link icon-blue icon-lg">
+        <img src="assets/icons/linkedin_icon.png" alt="LinkedIn">
+      </a>
+      <a href="https://x.com/shilpishahh" target="_blank" rel="noopener" class="icon-link icon-pink">
+        <img src="assets/icons/x_icon.webp" alt="X">
+      </a>
+      <a href="https://scholar.google.com/citations?view_op=list_works&hl=en&hl=en&user=nwGi15sAAAAJ" target="_blank" rel="noopener" class="icon-link icon-yellow icon-lg">
+        <img src="assets/icons/scholar_icon.png" alt="Google Scholar">
+      </a>
+    </div>
 </div>
+<script>
+  (function() {
+    const field = document.getElementById('particles');
+    const N = 28;
+    for (let i = 0; i < N; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      const driftDur = (10 + Math.random() * 14).toFixed(1) + 's';
+      const twinkleDur = (2 + Math.random() * 3).toFixed(1) + 's';
+      p.style.animationDuration = driftDur + ', ' + twinkleDur;
+      p.style.animationDelay = (Math.random() * 10).toFixed(1) + 's, ' + (Math.random() * 3).toFixed(1) + 's';
+      field.appendChild(p);
+    }
+  })();
+</script>
 </body>
 </html>

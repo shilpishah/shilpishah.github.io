@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WORK | Projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -19,22 +22,61 @@
     position: fixed;
     inset: 0;
     z-index: 0;
-    background: 
-      radial-gradient(ellipse at 20% 30%, rgba(168,85,247,0.08) 0%, transparent 50%),
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(91,56,118,0.14) 0%, transparent 50%),
       #04060e;
     pointer-events: none;
   }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+  }
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #E8749C;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #E8749C;
+    opacity: 0;
+    animation: drift linear infinite, twinkle ease-in-out infinite;
+  }
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-120vh); }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.7; }
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
   .container {
     position: relative;
     z-index: 10;
     max-width: 800px;
     margin: 0 auto;
-    padding: 60px 40px;
+    padding: 60px 40px 100px;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
   }
   .back-link {
     display: inline-block;
     margin-bottom: 40px;
-    color: #a855f7;
+    color: #E8749C;
     text-decoration: none;
     font-size: 12px;
     letter-spacing: 0.3em;
@@ -42,47 +84,529 @@
   }
   .back-link:hover {
     opacity: 0.7;
+    text-shadow: 0 0 8px currentColor;
   }
   h1 {
-    font-family: 'Bitcount Ink', monospace;
+    font-family: 'Bitcount Prop Single', monospace;
+    font-weight: 400;
     font-size: 32px;
-    color: #a855f7;
+    color: #E8749C;
     margin-bottom: 10px;
     letter-spacing: 0.2em;
+    text-shadow: 0 0 6px currentColor, 0 0 16px currentColor;
   }
   .subtitle {
-    font-size: 12px;
-    color: #6b7a94;
-    letter-spacing: 0.3em;
+    display: inline-block;
+    font-size: 11px;
+    color: #2a1608;
+    letter-spacing: 0.25em;
+    background: linear-gradient(180deg, #F7B36E, #F2A25C);
+    border: 2px solid #1A2440;
+    padding: 6px 16px;
+    box-shadow: 3px 3px 0 #4A6298, 5px 5px 0 rgba(10,14,24,0.4);
     margin-bottom: 50px;
   }
   .content {
+    position: relative;
     font-size: 14px;
     line-height: 1.8;
   }
-  .content p {
+  .content > p {
     margin-bottom: 20px;
   }
   .neural-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(168,85,247,0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(232,116,156,0.3), transparent);
     margin: 40px 0;
+  }
+
+  /* ---- section tabs ---- */
+  .section-title {
+    display: inline-block;
+    font-family: 'Bitcount Prop Single', monospace;
+    font-weight: 400;
+    font-size: 18px;
+    color: #ffffff;
+    letter-spacing: 0.14em;
+    text-shadow: 0 0 4px rgba(255,255,255,0.3);
+    background: #241536;
+    border: 3px solid #5B3876;
+    padding: 8px 22px;
+    margin: 50px 0 26px;
+    box-shadow: 4px 4px 0 #8B5FBF, 6px 6px 0 rgba(20,10,30,0.4);
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .section-title:first-of-type {
+    margin-top: 10px;
+  }
+  a.section-title {
+    cursor: pointer;
+  }
+  a.section-title:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #8B5FBF, 9px 9px 0 rgba(20,10,30,0.4);
+  }
+
+  /* ---- timeline (projects / leadership) ---- */
+  .timeline {
+    position: relative;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 15px;
+    width: 2px;
+    background: linear-gradient(180deg,
+      rgba(91,56,118,0.05),
+      rgba(91,56,118,0.45) 8%,
+      rgba(91,56,118,0.45) 92%,
+      rgba(91,56,118,0.05));
+  }
+  .star-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 128px;
+    height: 128px;
+    transform: translateX(-50%);
+    z-index: 5;
+    pointer-events: none;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    transition: top 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: starBounce 1.1s ease-in-out infinite;
+  }
+  @keyframes starBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(-8px); }
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 30px;
+  }
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+  .timeline-content {
+    margin-left: 36px;
+    background: linear-gradient(180deg, #F6C9DE, #F3A98A 55%, #F2A25C);
+    border: 3px solid #5B3876;
+    padding: 16px 20px;
+    box-shadow: 6px 6px 0 #8B5FBF, 9px 9px 0 rgba(20,10,30,0.35), inset 0 2px 0 rgba(255,255,255,0.35);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .timeline-item:hover .timeline-content {
+    border-color: #3d2350;
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 #8B5FBF, 13px 13px 0 rgba(20,10,30,0.35), inset 0 2px 0 rgba(255,255,255,0.45);
+  }
+  .entry-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .role-title {
+    font-weight: bold;
+    color: #341030;
+    font-size: 14.5px;
+    letter-spacing: 0.02em;
+  }
+  .entry-dates {
+    font-size: 12px;
+    color: #6B3A5C;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .entry-sub-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 3px 0 12px;
+  }
+  .company-name {
+    font-style: italic;
+    color: #5C2A48;
+    font-size: 12.5px;
+  }
+  .entry-bullets {
+    list-style: none;
+  }
+  .entry-bullets li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #2E1226;
+  }
+  .entry-bullets li:last-child {
+    margin-bottom: 0;
+  }
+  .entry-bullets li::before {
+    content: '●';
+    position: absolute;
+    left: 2px;
+    top: 1px;
+    font-size: 9px;
+    color: #F2A25C;
+    text-shadow: -1px 0 0 #5B3876, 1px 0 0 #5B3876, 0 -1px 0 #5B3876, 0 1px 0 #5B3876;
+  }
+
+  /* ---- leadership promotion trail ---- */
+  .promo-list {
+    margin-top: 10px;
+    padding-left: 14px;
+    border-left: 2px dashed rgba(91,56,118,0.45);
+  }
+  .promo-item {
+    font-size: 11.5px;
+    color: #5C2A48;
+    margin-bottom: 6px;
+  }
+  .promo-item:last-child {
+    margin-bottom: 0;
+  }
+  .promo-role {
+    font-weight: bold;
+    color: #3d2030;
+  }
+  .promo-dates {
+    color: #6B3A5C;
+    margin-left: 6px;
+  }
+
+  /* ---- external link pill ---- */
+  .ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    padding: 4px 12px;
+    margin-top: 10px;
+    background: #241536;
+    color: #ffffff;
+    border: 2px solid #5B3876;
+    text-decoration: none;
+    box-shadow: 2px 2px 0 #8B5FBF;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ext-link:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 #8B5FBF;
+  }
+
+  /* ---- publications / awards ---- */
+  .pub-list, .award-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .pub-item, .award-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: linear-gradient(180deg, #F6C9DE, #F3A98A 55%, #F2A25C);
+    border: 3px solid #5B3876;
+    padding: 14px 18px;
+    box-shadow: 4px 4px 0 #8B5FBF, 6px 6px 0 rgba(20,10,30,0.35), inset 0 2px 0 rgba(255,255,255,0.35);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .pub-item:hover, .award-item:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #8B5FBF, 9px 9px 0 rgba(20,10,30,0.35), inset 0 2px 0 rgba(255,255,255,0.45);
+  }
+  .pub-badge, .award-badge {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F2A25C;
+    border: 2px solid #5B3876;
+    color: #341030;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .pub-text, .award-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #2E1226;
+  }
+  .pub-status {
+    font-style: italic;
+    color: #6B3A5C;
+    font-size: 12px;
+  }
+  .pub-link {
+    color: #3d2350;
+    font-weight: bold;
+  }
+  .award-body {
+    flex: 1;
+    min-width: 0;
+  }
+  @media (max-width: 640px) {
+    .timeline::before { left: 8px; }
+    .star-icon { width: 75px; height: 75px; }
+    .timeline-content { margin-left: 22px; }
+    .entry-dates { white-space: normal; }
   }
 </style>
 </head>
 <body>
+<div class="particles" id="particles"></div>
 <div class="container">
   <a href="hub.html" class="back-link">◄ RETURN TO NEURAL HUB</a>
   <h1>WORK</h1>
   <div class="subtitle">[ projects ]</div>
-  
+
   <div class="content">
-    <p>Welcome to the work node. A collection of creative and technical projects.</p>
-    
+    <p>Welcome to the SALIENCE NETWORK! The salience network is the brain system that filters incoming information and flags what's worth paying attention to. Publications, projects, leadership, and awards — the work worth surfacing.</p>
+
     <div class="neural-divider"></div>
-    
-    <p>This space is under construction. Project showcase coming soon.</p>
+
+    <img src="assets/star.png" class="star-icon" id="starIcon" alt="">
+
+    <a href="https://scholar.google.com/citations?view_op=list_works&hl=en&hl=en&user=nwGi15sAAAAJ" target="_blank" rel="noopener" class="section-title">PUBLICATIONS ↗</a>
+    <div class="pub-list">
+
+      <div class="pub-item">
+        <div class="pub-badge">1</div>
+        <p class="pub-text">Brunet, M., Shah, S., Atallah, M., Wilkie, A., &amp; Herrman, R. (2025). An Exclusive-Sum-of-Products Pipeline for QAOA. In <em>Frontiers in Industrial Engineering</em> (pp. 89–104). Springer Nature.</p>
+      </div>
+
+      <div class="pub-item">
+        <div class="pub-badge">2</div>
+        <p class="pub-text">Shah, S., Franz, B., Forgach, T., Jostes, M., Siegel, J., &amp; Chung, C. (2023, October). Comparing Traditional Computer Vision Algorithms and Deep Convolutional Neural Networks as Self Driving Algorithms for Use in Dynamic Conditions. In <em>2023 IEEE MIT Undergraduate Research Technology Conference (URTC)</em>, Cambridge, MA, USA, pp. 1–5, <a class="pub-link" href="https://doi.org/10.1109/URTC60662.2023.10534995" target="_blank" rel="noopener">doi:10.1109/URTC60662.2023.10534995</a></p>
+      </div>
+
+      <div class="pub-item">
+        <div class="pub-badge">3</div>
+        <p class="pub-text">Khalfin, M., Volgren, J., LeGoullon, L., Franz, B., Shah, S., Forgach, T., Jones, M., Jostes, M., Kaddis, R., Siegel, J., &amp; Chung, C. (2023, October). Vehicle-to-Everything Communication Using a Roadside Unit for Over-the-Horizon Object Awareness. In <em>1st International Conference on Smart Mobility and Vehicle Electrification</em>, <a class="pub-link" href="https://doi.org/10.46254/EV01.20230202" target="_blank" rel="noopener">doi.org/10.46254/EV01.20230202</a></p>
+      </div>
+
+      <div class="pub-item">
+        <div class="pub-badge">4</div>
+        <p class="pub-text">Rutgers Center for Cognitive Science Consortium. Cognition in Sensory Cortex. Submitted to <em>Academia Biology</em> 2024. <span class="pub-status">(Under Review)</span></p>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">PROJECTS</h2>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <div class="entry-top-row">
+            <span class="role-title">Exploring Semantic Organization of Biomedical Concepts Using Clusters of Multi-word Expressions</span>
+            <span class="entry-dates">Sep 2025 – Dec 2025</span>
+          </div>
+          <div class="entry-sub-row">
+            <span class="company-name">Topics in AI: Natural Language Processing</span>
+          </div>
+          <ul class="entry-bullets">
+            <li>Built a large-scale weighted MWE co-occurrence graph from MEDLINE abstracts (~32K nodes, 168K edges at t=10), applying frequency thresholding and recursive cluster splitting to induce interpretable semantic structure.</li>
+            <li>Designed and implemented a parameter sweep framework across co-occurrence thresholds, max/min cluster size constraints, and 5+ clustering algorithms (Leiden, Louvain, Chinese Whispers, HMM, agglomerative), systematically characterizing trade-offs in cluster granularity and semantic coherence.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <div class="entry-top-row">
+            <span class="role-title">feelscape</span>
+            <span class="entry-dates">Sep 2025</span>
+          </div>
+          <div class="entry-sub-row">
+            <span class="company-name">HackMIT 2025</span>
+          </div>
+          <ul class="entry-bullets">
+            <li>Designed and trained a custom 1D CNN on emotion-labeled EEG datasets for real-time 3-class affective state classification (Positive/Negative/Neutral), achieving 98% accuracy on 4-channel, 256Hz consumer headset data.</li>
+            <li>Built end-to-end EEG signal processing pipeline (bandpass/notch filtering, artifact removal, PSD feature extraction) enabling &lt;3 second emotion update latency on live brainwave input.</li>
+            <li>Integrated Suno API with LLM-driven prompt generation to synthesize emotion-conditioned music in real time, automatically adapting composition style as detected affective state changes.</li>
+          </ul>
+          <a href="https://github.com/shilpishah/feelscape" target="_blank" rel="noopener" class="ext-link">↗ GitHub</a>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <div class="entry-top-row">
+            <span class="role-title">mood ring</span>
+            <span class="entry-dates">Jun 2025</span>
+          </div>
+          <div class="entry-sub-row">
+            <span class="company-name">Personal Project</span>
+          </div>
+          <ul class="entry-bullets">
+            <li>Engineered a personalized Spotify recommendation engine using the Spotify API and user listening history to deliver song recommendations across 8 distinct emotional states, alongside LLM-generated soothing phrases via a REST backend.</li>
+          </ul>
+          <a href="https://github.com/shilpishah/MoodRing" target="_blank" rel="noopener" class="ext-link">↗ GitHub</a>
+        </div>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">LEADERSHIP</h2>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <div class="entry-top-row">
+            <span class="role-title">President</span>
+            <span class="entry-dates">2024 – 2026</span>
+          </div>
+          <div class="entry-sub-row">
+            <span class="company-name">Space Technology Association at Rutgers · Rutgers Robotics Team</span>
+          </div>
+          <div class="promo-list">
+            <div class="promo-item"><span class="promo-role">Software Lead</span><span class="promo-dates">2023 – 2024</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <div class="entry-top-row">
+            <span class="role-title">Vice President of Design</span>
+            <span class="entry-dates">2025 – 2026</span>
+          </div>
+          <div class="entry-sub-row">
+            <span class="company-name">Design for America</span>
+          </div>
+          <div class="promo-list">
+            <div class="promo-item"><span class="promo-role">Membership Development Director</span><span class="promo-dates">2024 – 2025</span></div>
+            <div class="promo-item"><span class="promo-role">Project Lead</span><span class="promo-dates">2023 – 2024</span></div>
+            <div class="promo-item"><span class="promo-role">Innovation, Design, Entrepreneurship Academy Scholar</span><span class="promo-dates">2022 – 2023</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-content">
+          <div class="entry-top-row">
+            <span class="role-title">Secretary</span>
+            <span class="entry-dates">2025 – 2026</span>
+          </div>
+          <div class="entry-sub-row">
+            <span class="company-name">Rutgers Fencing Team</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">AWARDS</h2>
+    <div class="award-list">
+
+      <div class="award-item">
+        <div class="award-badge">★</div>
+        <div class="award-body">
+          <span class="award-text">1st Place – Yale Quantum Hackathon 2025 (Alice and Bob)</span><br>
+          <a href="https://github.com/Alice-Bob-SW/eth25-alice-bob-challenge" target="_blank" rel="noopener" class="ext-link">↗ GitHub</a>
+        </div>
+      </div>
+
+      <div class="award-item">
+        <div class="award-badge">★</div>
+        <div class="award-body">
+          <span class="award-text">1st Place – Hack Princeton 2024 (Globally Scientific)</span><br>
+          <a href="https://github.com/NandeeneeSingh/HackPrinceton" target="_blank" rel="noopener" class="ext-link">↗ GitHub</a>
+        </div>
+      </div>
+
+      <div class="award-item">
+        <div class="award-badge">★</div>
+        <div class="award-body"><span class="award-text">1st Place – IEOM Society Conference (Smart Mobility)</span></div>
+      </div>
+
+      <div class="award-item">
+        <div class="award-badge">★</div>
+        <div class="award-body"><span class="award-text">1st Place – Middlesex County Magnet Schools 2022 (Outstanding Research)</span></div>
+      </div>
+
+      <div class="award-item">
+        <div class="award-badge">★</div>
+        <div class="award-body"><span class="award-text">Legacy Leadership Nominee – Dr. Jewel Plummer Cobb Conference 2025</span></div>
+      </div>
+
+      <div class="award-item">
+        <div class="award-badge">★</div>
+        <div class="award-body"><span class="award-text">Trailblazer in STEAM Nominee – Dr. Jewel Plummer Cobb Conference 2023</span></div>
+      </div>
+
+    </div>
+
   </div>
 </div>
+<script>
+  (function() {
+    const field = document.getElementById('particles');
+    const N = 28;
+    for (let i = 0; i < N; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      const driftDur = (10 + Math.random() * 14).toFixed(1) + 's';
+      const twinkleDur = (2 + Math.random() * 3).toFixed(1) + 's';
+      p.style.animationDuration = driftDur + ', ' + twinkleDur;
+      p.style.animationDelay = (Math.random() * 10).toFixed(1) + 's, ' + (Math.random() * 3).toFixed(1) + 's';
+      field.appendChild(p);
+    }
+  })();
+
+  (function() {
+    const star = document.getElementById('starIcon');
+    const content = document.querySelector('.content');
+    const items = Array.from(document.querySelectorAll('.section-title'));
+    if (!star || !content || items.length === 0) return;
+
+    let activeItem = items[0];
+
+    function targetPos(item) {
+      const contentRect = content.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      const gap = 20;
+      if (window.innerWidth < 640) {
+        return {
+          left: (itemRect.left - contentRect.left) + itemRect.width / 2,
+          top: (itemRect.bottom - contentRect.top) + gap
+        };
+      }
+      return {
+        left: (itemRect.right - contentRect.left) + gap + star.offsetWidth / 2,
+        top: (itemRect.top - contentRect.top) + itemRect.height / 2 - star.offsetHeight / 2
+      };
+    }
+
+    function place(item, animate) {
+      star.style.transition = animate ? '' : 'none';
+      const pos = targetPos(item);
+      star.style.left = pos.left + 'px';
+      star.style.top = pos.top + 'px';
+    }
+
+    items.forEach(function(item) {
+      item.addEventListener('mouseenter', function() {
+        activeItem = item;
+        place(item, true);
+      });
+    });
+
+    window.addEventListener('resize', function() { place(activeItem, false); });
+    window.addEventListener('load', function() { place(activeItem, false); });
+    place(activeItem, false);
+  })();
+</script>
 </body>
 </html>
